@@ -5,7 +5,7 @@ import './index.css';
 function Square(props) {
       return (
         <button 
-            className="square" 
+            className={props.cName} 
             onClick={props.onClick} >
           {props.value}
         </button>
@@ -15,9 +15,18 @@ function Square(props) {
 class Board extends React.Component {
 
     renderSquare(i) {
+        let cName = "square";
+        if(this.props.yellow) {
+            for(let x =0; x < this.props.yellow.length; x++) {
+                if(i === this.props.yellow[x]) {
+                    cName = "yellow";
+                }
+            }
+        }
         return (
             <Square 
                 value={this.props.squares[i]}
+                cName={cName}
                 onClick={() => this.props.onClick(i)}
             />);
     }
@@ -93,9 +102,11 @@ class Game extends React.Component {
         });
         let status;
         let finish;
+        let makeYellow;
         if(winner) {
             status = 'Winner: ' + winner[0];
             finish = 'Game Over';
+            makeYellow = winner[1];
         } else {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
@@ -104,6 +115,7 @@ class Game extends React.Component {
                 <div className="game-board">
                 <Board 
                     squares = {current.squares}
+                    yellow = {makeYellow}
                     onClick={(i) => this.handleClick(i)}
                 />
                 </div>
